@@ -37,7 +37,7 @@ const Home: NextPage = () => {
     <>
       <Header height={HEADER_HEIGHT} mb={50} className={classes.root}>
         <Container className={classes.header}>
-          <Text fz="xl">Food Organizer</Text>
+          <Text fz="xl">Higgins Family Gift List</Text>
         </Container>
       </Header>
       <Container>Test</Container>
