@@ -15,8 +15,18 @@ datasource db {
 }
 
 model FamilyMember {
-  id                String  @id @default(cuid())
-  name String
+  id        String     @id @default(cuid())
+  name      String
+  giftItems GiftItem[]
+}
+
+model GiftItem {
+  id             String       @id @default(cuid())
+  name           String
+  notes          String
+  url            String?
+  familyMemberId String
+  familyMember   FamilyMember @relation(fields: [familyMemberId], references: [id], onDelete: Cascade)
 }
 
 // Necessary for Next auth
