@@ -14,6 +14,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model FamilyMember {
+  id                String  @id @default(cuid())
+  name String
+}
+
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
