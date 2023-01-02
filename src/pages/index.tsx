@@ -1,22 +1,10 @@
-import styles from "./index.module.css";
 import { type NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
-import {
-  AppShell,
-  Navbar,
-  Header,
-  Container,
-  Text,
-  createStyles,
-} from "@mantine/core";
-
-import { trpc } from "../utils/trpc";
+import { Header, Container, Text, createStyles } from "@mantine/core";
+import { GiftList } from "../components/GiftList";
 
 const HEADER_HEIGHT = 60;
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   root: {
     position: "relative",
     zIndex: 1,
@@ -40,7 +28,9 @@ const Home: NextPage = () => {
           <Text fz="xl">Higgins Family Gift List</Text>
         </Container>
       </Header>
-      <Container>Test</Container>
+      <Container>
+        <GiftList />
+      </Container>
     </>
   );
 };
