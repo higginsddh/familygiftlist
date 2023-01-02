@@ -29,8 +29,8 @@ export const giftItemRouter = router({
         familyMemberId: z.string(),
       })
     )
-    .query(({ input, ctx }) => {
-      return ctx.prisma.giftItem.findMany({
+    .query(async ({ input, ctx }) => {
+      const result = await ctx.prisma.giftItem.findMany({
         where: {
           familyMemberId: {
             equals: input.familyMemberId,
@@ -40,5 +40,7 @@ export const giftItemRouter = router({
           name: "asc",
         },
       });
+
+      return result;
     }),
 });

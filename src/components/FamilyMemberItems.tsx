@@ -15,7 +15,13 @@ export function FamilyMemberItems({
     <>
       {isLoadingItems ? <LoadingOverlay visible overlayBlur={2} /> : null}
 
-      {items ? items.map((i) => <div key={i.id}>{i.name}</div>) : null}
+      {items
+        ? items.map((i) => (
+            <div key={i.id}>
+              {i.name}, {i.url}, {i.notes}
+            </div>
+          ))
+        : null}
     </>
   );
 }
