@@ -6,6 +6,7 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
 
@@ -24,6 +25,14 @@ const defaultFormData: FormData = {
 export function AddItem({ familyMemberId }: { familyMemberId: string }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState<FormData>(defaultFormData);
+
+  const form = useForm({
+    initialValues: {
+      name: "",
+      url: "",
+      notes: "",
+    },
+  });
 
   const utils = trpc.useContext();
 
@@ -57,53 +66,29 @@ export function AddItem({ familyMemberId }: { familyMemberId: string }) {
         {isAddingItem ? <LoadingOverlay visible overlayBlur={2} /> : null}
 
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-
+          onSubmit={form.onSubmit((values) => {
             addItem({
               familyMemberId,
-              ...formData,
+              ...values,
             });
-          }}
+          })}
         >
           <TextInput
             label="Item"
             withAsterisk
-            value={formData.name}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                name: e.currentTarget.value,
-              })
-            }
             mb="md"
             required
+            {...form.getInputProps("name")}
           />
 
           <TextInput
             label="Website"
-            value={formData.url}
             type="url"
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                url: e.currentTarget.value,
-              })
-            }
             mb="md"
+            {...form.getInputProps("url")}
           />
 
-          <Textarea
-            label="Notes"
-            value={formData.notes}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                notes: e.currentTarget.value,
-              })
-            }
-            mb="md"
-          />
+          <Textarea label="Notes" mb="md" {...form.getInputProps("notes")} />
 
           <Group mt="md" position="right">
             <Button type="submit">Save</Button>
