@@ -28,7 +28,7 @@ export const giftItemRouter = router({
 
   updateGiftItem: publicProcedure
     .input(
-      giftItem.extend({
+      giftItem.partial().extend({
         id: z.string(),
       })
     )
@@ -38,9 +38,7 @@ export const giftItemRouter = router({
           id: input.id,
         },
         data: {
-          name: input.name,
-          notes: input.notes,
-          url: input.url,
+          ...input,
         },
       });
     }),
