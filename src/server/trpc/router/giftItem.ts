@@ -2,20 +2,42 @@ import { z } from "zod";
 
 import { router, publicProcedure } from "../trpc";
 
+const giftItem = z.object({
+  name: z.string(),
+  notes: z.string(),
+  url: z.string().nullable(),
+});
+
 export const giftItemRouter = router({
   addGiftItem: publicProcedure
     .input(
-      z.object({
+      giftItem.extend({
         familyMemberId: z.string(),
-        name: z.string(),
-        notes: z.string(),
-        url: z.string().nullable(),
       })
     )
     .mutation(({ input, ctx }) => {
       return ctx.prisma.giftItem.create({
         data: {
           familyMemberId: input.familyMemberId,
+          name: input.name,
+          notes: input.notes,
+          url: input.url,
+        },
+      });
+    }),
+
+  updateGiftItem: publicProcedure
+    .input(
+      giftItem.extend({
+        id: z.string(),
+      })
+    )
+    .mutation(({ input, ctx }) => {
+      return ctx.prisma.giftItem.update({
+        where: {
+          id: input.id,
+        },
+        data: {
           name: input.name,
           notes: input.notes,
           url: input.url,

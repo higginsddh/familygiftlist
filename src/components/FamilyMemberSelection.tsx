@@ -71,7 +71,6 @@ export function FamilyMemberSelection({
           placeholder="Choose family member"
           radius="md"
           size="xl"
-          clearable
           getCreateLabel={(query) => `+ Add ${query}`}
           onCreate={(name) => {
             addFamilyMember({

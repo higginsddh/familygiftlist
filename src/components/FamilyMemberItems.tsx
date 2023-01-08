@@ -17,13 +17,7 @@ export function FamilyMemberItems({
       {isLoadingItems ? <LoadingOverlay visible overlayBlur={2} /> : null}
 
       {items
-        ? items.map((i) => (
-            <FamilyMemberItem
-              familyMemberId={familyMemberId}
-              giftItem={i}
-              key={i.id}
-            />
-          ))
+        ? items.map((i) => <FamilyMemberItem giftItem={i} key={i.id} />)
         : null}
     </>
   );

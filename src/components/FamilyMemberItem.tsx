@@ -9,22 +9,18 @@ import {
 import type { GiftItem } from "@prisma/client";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
+import { EditItem } from "./EditItem";
 
-export function FamilyMemberItem({
-  familyMemberId,
-  giftItem,
-}: {
-  familyMemberId: string;
-  giftItem: GiftItem;
-}) {
+export function FamilyMemberItem({ giftItem }: { giftItem: GiftItem }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const utils = trpc.useContext();
 
   const { mutate: deleteItem, isLoading: isDeletingItem } =
     trpc.giftItem.deleteGiftItem.useMutation({
       onSettled: () => {
         utils.giftItem.getGiftItems.invalidate({
-          familyMemberId,
+          familyMemberId: giftItem.familyMemberId,
         });
       },
     });
@@ -39,7 +35,14 @@ export function FamilyMemberItem({
         </Text>
 
         <div>
-          <Button variant="light" color="blue" mt="md" radius="md" mr="sm">
+          <Button
+            variant="light"
+            color="blue"
+            mt="md"
+            radius="md"
+            mr="sm"
+            onClick={() => setShowEdit(true)}
+          >
             Edit
           </Button>
           <Button
@@ -53,6 +56,11 @@ export function FamilyMemberItem({
           </Button>
         </div>
       </Card>
+
+      {showEdit ? (
+        <EditItem onClose={() => setShowEdit(false)} giftItem={giftItem} />
+      ) : null}
+
       <Modal
         opened={showDeleteConfirm}
         title={`Delete ${giftItem.name}?`}
