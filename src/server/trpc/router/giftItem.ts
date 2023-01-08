@@ -23,6 +23,20 @@ export const giftItemRouter = router({
       });
     }),
 
+  deleteGiftItem: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(({ input, ctx }) => {
+      return ctx.prisma.giftItem.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
+
   getGiftItems: publicProcedure
     .input(
       z.object({

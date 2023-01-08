@@ -10,21 +10,8 @@ import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
 
-interface FormData {
-  name: string;
-  url: string;
-  notes: string;
-}
-
-const defaultFormData: FormData = {
-  name: "",
-  url: "",
-  notes: "",
-};
-
 export function AddItem({ familyMemberId }: { familyMemberId: string }) {
   const [showAddForm, setShowAddForm] = useState(false);
-  const [formData, setFormData] = useState<FormData>(defaultFormData);
 
   const form = useForm({
     initialValues: {
@@ -40,7 +27,7 @@ export function AddItem({ familyMemberId }: { familyMemberId: string }) {
     trpc.giftItem.addGiftItem.useMutation({
       onSuccess: () => {
         setShowAddForm(false);
-        setFormData(defaultFormData);
+        form.reset();
       },
 
       onSettled: () => {
@@ -53,7 +40,7 @@ export function AddItem({ familyMemberId }: { familyMemberId: string }) {
   return (
     <>
       <Group position="right">
-        <Button mt="md" onClick={() => setShowAddForm(true)}>
+        <Button mt="md" mb="md" onClick={() => setShowAddForm(true)}>
           Add Item
         </Button>
       </Group>

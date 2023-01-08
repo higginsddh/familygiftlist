@@ -1,5 +1,6 @@
 import { LoadingOverlay } from "@mantine/core";
 import { trpc } from "../utils/trpc";
+import { FamilyMemberItem } from "./FamilyMemberItem";
 
 export function FamilyMemberItems({
   familyMemberId,
@@ -17,9 +18,11 @@ export function FamilyMemberItems({
 
       {items
         ? items.map((i) => (
-            <div key={i.id}>
-              {i.name}, {i.url}, {i.notes}
-            </div>
+            <FamilyMemberItem
+              familyMemberId={familyMemberId}
+              giftItem={i}
+              key={i.id}
+            />
           ))
         : null}
     </>
