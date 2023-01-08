@@ -72,7 +72,6 @@ export function FamilyMemberSelection({
           radius="md"
           size="xl"
           searchable
-          creatable
           clearable
           getCreateLabel={(query) => `+ Add ${query}`}
           onCreate={(name) => {
