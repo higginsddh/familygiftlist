@@ -1,14 +1,8 @@
-import {
-  Button,
-  Group,
-  LoadingOverlay,
-  Modal,
-  Textarea,
-  TextInput,
-} from "@mantine/core";
+import { Button, Group } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
+import { BaseForm } from "./BaseForm";
 
 export function AddItem({ familyMemberId }: { familyMemberId: string }) {
   const [showAddForm, setShowAddForm] = useState(false);
@@ -45,51 +39,23 @@ export function AddItem({ familyMemberId }: { familyMemberId: string }) {
         </Button>
       </Group>
 
-      <Modal
-        opened={showAddForm}
-        onClose={() => setShowAddForm(false)}
-        title="Add Item"
-      >
-        {isAddingItem ? <LoadingOverlay visible overlayBlur={2} /> : null}
-
-        <form
-          onSubmit={form.onSubmit((values) => {
+      {showAddForm ? (
+        <BaseForm
+          onClose={() => setShowAddForm(false)}
+          onSave={(values) =>
             addItem({
               familyMemberId,
               ...values,
-            });
-          })}
-        >
-          <TextInput
-            label="Item"
-            withAsterisk
-            mb="md"
-            required
-            {...form.getInputProps("name")}
-          />
-
-          <TextInput
-            label="Website"
-            type="url"
-            mb="md"
-            {...form.getInputProps("url")}
-          />
-
-          <Textarea label="Notes" mb="md" {...form.getInputProps("notes")} />
-
-          <Group mt="md" position="right">
-            <Button type="submit">Save</Button>
-
-            <Button
-              type="button"
-              color="gray"
-              onClick={() => setShowAddForm(false)}
-            >
-              Close
-            </Button>
-          </Group>
-        </form>
-      </Modal>
+            })
+          }
+          defaultFormData={{
+            name: "",
+            url: "",
+            notes: "",
+          }}
+          saving={isAddingItem}
+        />
+      ) : null}
     </>
   );
 }
