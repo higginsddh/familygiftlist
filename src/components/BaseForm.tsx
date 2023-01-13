@@ -9,6 +9,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
+import { env } from "../env/client.mjs";
 import { FamilyMemberItemImage } from "./FamilyMemberItemImage";
 
 type FormData = {
@@ -52,12 +53,21 @@ export function BaseForm({
               setFileUploading(true);
               const fileData = new FormData();
               fileData.append("file", file);
-              fileData.append("upload_preset", "dwi7jlm4");
-              fileData.append("cloud_name", "dutizqtbe");
-              fetch("https://api.cloudinary.com/v1_1/dutizqtbe/image/upload", {
-                method: "post",
-                body: fileData,
-              })
+              fileData.append(
+                "upload_preset",
+                env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+              );
+              fileData.append(
+                "cloud_name",
+                env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+              );
+              fetch(
+                `https://api.cloudinary.com/v1_1/${env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+                {
+                  method: "post",
+                  body: fileData,
+                }
+              )
                 .then((resp) => resp.json())
                 .then((data) => {
                   setFileUploading(false);
