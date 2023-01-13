@@ -25,6 +25,7 @@ model GiftItem {
   name           String
   notes          String
   url            String?
+  imagePath      String?
   familyMemberId String
   familyMember   FamilyMember @relation(fields: [familyMemberId], references: [id], onDelete: Cascade)
 }

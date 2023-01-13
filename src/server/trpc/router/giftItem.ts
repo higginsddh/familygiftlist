@@ -6,6 +6,7 @@ const giftItem = z.object({
   name: z.string(),
   notes: z.string(),
   url: z.string().nullable(),
+  imagePath: z.string().optional(),
 });
 
 export const giftItemRouter = router({
@@ -22,6 +23,7 @@ export const giftItemRouter = router({
           name: input.name,
           notes: input.notes,
           url: input.url,
+          imagePath: input.imagePath ?? null,
         },
       });
     }),

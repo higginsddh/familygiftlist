@@ -10,24 +10,9 @@ import type { GiftItem } from "@prisma/client";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
 import { EditItem } from "./EditItem";
-
-import { Cloudinary } from "@cloudinary/url-gen";
-import { AdvancedImage } from "@cloudinary/react";
-import { thumbnail, scale } from "@cloudinary/url-gen/actions/resize";
+import { FamilyMemberItemImage } from "./FamilyMemberItemImage";
 
 export function FamilyMemberItem({ giftItem }: { giftItem: GiftItem }) {
-  // Create and configure your Cloudinary instance.
-  const cld = new Cloudinary({
-    cloud: {
-      cloudName: "dutizqtbe",
-    },
-  });
-
-  // Use the image with public ID, 'front_face'.
-  const myImage = cld.image("public_uploads/txxu26bupsdzisdmxpmw");
-
-  myImage.resize(thumbnail().width(150)).format("png");
-
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const utils = trpc.useContext();
@@ -50,9 +35,11 @@ export function FamilyMemberItem({ giftItem }: { giftItem: GiftItem }) {
           {giftItem.notes}
         </Text>
 
-        <Card.Section mt="sm" ml="xs">
-          <AdvancedImage cldImg={myImage} />
-        </Card.Section>
+        {giftItem.imagePath ? (
+          <Card.Section mt="sm" ml="xs">
+            <FamilyMemberItemImage imagePath={giftItem.imagePath} />
+          </Card.Section>
+        ) : null}
 
         <div>
           <Button

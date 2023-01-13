@@ -9,11 +9,13 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
+import { FamilyMemberItemImage } from "./FamilyMemberItemImage";
 
 type FormData = {
   name: string;
   url: string;
   notes: string;
+  imagePath?: string;
 };
 
 export function BaseForm({
@@ -31,6 +33,10 @@ export function BaseForm({
     initialValues: defaultFormData,
   });
   const [file, setFile] = useState<File | null>(null);
+  const [selectedImagePreview, setSelectedImagePreview] = useState<
+    string | null
+  >(null);
+
   const [fileUploading, setFileUploading] = useState(false);
 
   return (
@@ -43,6 +49,7 @@ export function BaseForm({
         <form
           onSubmit={form.onSubmit((values) => {
             if (file) {
+              setFileUploading(true);
               const fileData = new FormData();
               fileData.append("file", file);
               fileData.append("upload_preset", "dwi7jlm4");
@@ -52,8 +59,20 @@ export function BaseForm({
                 body: fileData,
               })
                 .then((resp) => resp.json())
-                .then((data) => console.log(data))
-                .catch((err) => console.error(err));
+                .then((data) => {
+                  setFileUploading(false);
+                  const publicId = data.public_id as string;
+                  onSave({
+                    ...values,
+                    imagePath: publicId,
+                  });
+                })
+                .catch((err) => {
+                  setFileUploading(true);
+
+                  // TODO:
+                  console.log(err);
+                });
             } else {
               onSave(values);
             }
@@ -76,11 +95,34 @@ export function BaseForm({
 
           <Textarea label="Notes" mb="md" {...form.getInputProps("notes")} />
 
+          {defaultFormData.imagePath || selectedImagePreview ? (
+            <Group>
+              {selectedImagePreview ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={selectedImagePreview}
+                  width={150}
+                  alt="Image Preview"
+                />
+              ) : defaultFormData.imagePath ? (
+                <FamilyMemberItemImage imagePath={defaultFormData.imagePath} />
+              ) : null}
+            </Group>
+          ) : null}
+
           <FileInput
             placeholder="Pick photo"
             label="Image of item"
             accept="image/*"
-            onChange={(f) => setFile(f)}
+            onChange={(f) => {
+              setFile(f);
+
+              if (f) {
+                setSelectedImagePreview(URL.createObjectURL(f));
+              } else {
+                setSelectedImagePreview(null);
+              }
+            }}
           />
 
           <Group mt="md" position="right">
