@@ -3,6 +3,7 @@ import cloudinary from "cloudinary";
 
 import { router, publicProcedure } from "../trpc";
 import { env } from "../../../env/server.mjs";
+import type { Prisma, PrismaClient } from "@prisma/client";
 
 const giftItem = z.object({
   name: z.string(),
@@ -37,29 +38,14 @@ export const giftItemRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const whereClause = {
-        id: input.id,
-      };
-
-      const originalItem = await ctx.prisma.giftItem.findFirst({
-        where: whereClause,
-      });
-
-      if (
-        originalItem?.imagePath &&
-        (input.imagePath === null || input.imagePath === "")
-      ) {
-        cloudinary.v2.config({
-          cloud_name: env.CLOUDINARY_CLOUD_NAME,
-          api_key: env.CLOUDINARY_KEY,
-          api_secret: env.CLOUDINARY_SECRET,
-        });
-
-        await cloudinary.v2.uploader.destroy(originalItem.imagePath);
+      if (input.imagePath === null || input.imagePath === "") {
+        await deleteImageIfSet(ctx.prisma, input);
       }
 
       return ctx.prisma.giftItem.update({
-        where: whereClause,
+        where: {
+          id: input.id,
+        },
         data: {
           ...input,
         },
@@ -72,7 +58,9 @@ export const giftItemRouter = router({
         id: z.string(),
       })
     )
-    .mutation(({ input, ctx }) => {
+    .mutation(async ({ input, ctx }) => {
+      await deleteImageIfSet(ctx.prisma, input);
+
       return ctx.prisma.giftItem.delete({
         where: {
           id: input.id,
@@ -101,3 +89,30 @@ export const giftItemRouter = router({
       return result;
     }),
 });
+
+async function deleteImageIfSet(
+  prismaClient: PrismaClient<
+    Prisma.PrismaClientOptions,
+    never,
+    Prisma.RejectOnNotFound
+  >,
+  input: {
+    id: string;
+  }
+) {
+  const originalItem = await prismaClient.giftItem.findFirst({
+    where: {
+      id: input.id,
+    },
+  });
+
+  if (originalItem?.imagePath) {
+    cloudinary.v2.config({
+      cloud_name: env.CLOUDINARY_CLOUD_NAME,
+      api_key: env.CLOUDINARY_KEY,
+      api_secret: env.CLOUDINARY_SECRET,
+    });
+
+    await cloudinary.v2.uploader.destroy(originalItem.imagePath);
+  }
+}
