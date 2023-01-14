@@ -1,5 +1,7 @@
 import {
+  Anchor,
   Button,
+  Center,
   FileInput,
   Group,
   LoadingOverlay,
@@ -30,10 +32,14 @@ export function BaseForm({
   onSave: (formData: FormData) => void;
   saving: boolean;
 }) {
-  const form = useForm<FormData>({
+  const form = useForm<Omit<FormData, "imagePath">>({
     initialValues: defaultFormData,
   });
   const [file, setFile] = useState<File | null>(null);
+
+  const [imagePath, setImagePath] = useState<string | null>(
+    defaultFormData.imagePath
+  );
   const [selectedImagePreview, setSelectedImagePreview] = useState<
     string | null
   >(null);
@@ -50,6 +56,11 @@ export function BaseForm({
 
         <form
           onSubmit={form.onSubmit((values) => {
+            const formValues = {
+              ...values,
+              imagePath,
+            };
+
             if (file) {
               setFileUploading(true);
               const fileData = new FormData();
@@ -85,7 +96,7 @@ export function BaseForm({
                   console.log(err);
                 });
             } else {
-              onSave(values);
+              onSave(formValues);
             }
           })}
         >
@@ -106,22 +117,35 @@ export function BaseForm({
 
           <Textarea label="Notes" mb="md" {...form.getInputProps("notes")} />
 
-          {defaultFormData.imagePath || selectedImagePreview ? (
-            <Group>
-              {selectedImagePreview ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={selectedImagePreview}
-                  width={width}
-                  alt="Image Preview"
-                />
-              ) : defaultFormData.imagePath ? (
-                <FamilyMemberItemImage
-                  imagePath={defaultFormData.imagePath}
-                  width={width}
-                />
-              ) : null}
-            </Group>
+          {imagePath || selectedImagePreview ? (
+            <>
+              <Group>
+                {selectedImagePreview ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={selectedImagePreview}
+                    width={width}
+                    alt="Image Preview"
+                  />
+                ) : imagePath ? (
+                  <FamilyMemberItemImage imagePath={imagePath} width={width} />
+                ) : null}
+              </Group>
+              <Center style={{ width }}>
+                <Anchor
+                  component="button"
+                  type="button"
+                  color={"red"}
+                  size="sm"
+                  onClick={() => {
+                    setSelectedImagePreview(null);
+                    setImagePath(null);
+                  }}
+                >
+                  Remove
+                </Anchor>
+              </Center>
+            </>
           ) : null}
 
           <FileInput
