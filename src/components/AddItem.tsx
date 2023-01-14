@@ -52,6 +52,7 @@ export function AddItem({ familyMemberId }: { familyMemberId: string }) {
             name: "",
             url: "",
             notes: "",
+            imagePath: null,
           }}
           saving={isAddingItem}
         />

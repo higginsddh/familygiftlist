@@ -16,7 +16,7 @@ type FormData = {
   name: string;
   url: string;
   notes: string;
-  imagePath?: string;
+  imagePath: string | null;
 };
 
 export function BaseForm({
@@ -40,6 +40,7 @@ export function BaseForm({
 
   const [fileUploading, setFileUploading] = useState(false);
 
+  const width = 150;
   return (
     <>
       <Modal opened={true} onClose={() => onClose()} title="Add Item">
@@ -111,11 +112,14 @@ export function BaseForm({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={selectedImagePreview}
-                  width={150}
+                  width={width}
                   alt="Image Preview"
                 />
               ) : defaultFormData.imagePath ? (
-                <FamilyMemberItemImage imagePath={defaultFormData.imagePath} />
+                <FamilyMemberItemImage
+                  imagePath={defaultFormData.imagePath}
+                  width={width}
+                />
               ) : null}
             </Group>
           ) : null}

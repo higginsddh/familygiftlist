@@ -37,6 +37,7 @@ export function EditItem({
         name: giftItem.name,
         url: giftItem.url ?? "",
         notes: giftItem.notes,
+        imagePath: giftItem.imagePath ?? null,
       }}
       saving={isUpdatingItem}
     />
